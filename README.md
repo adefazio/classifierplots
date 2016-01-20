@@ -16,9 +16,18 @@ Loads the package currently under development. This setup to automatically happe
 
 ### Documenting
 
-With the package loaded, you can create a function's documentation template with:
-    
-    prompt(<funcname>, "man/<funcname>.Rd")
+The best way to produce documentation is with roxygen. Just add annotations above each function you want to document like the following:
+
+```
+ #' @title my_function
+ #' @description Describe it here
+ #' @param x Describe x
+ #' @param y Describe y
+ #' @returns what it returns
+ my_function <- function(x,y) { ...
+```
+
+Then to produce the .Rd documentation files, call `document()`
 
 ### Testing
 In R, within the (renamed) R.templates directory:
