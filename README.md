@@ -23,7 +23,7 @@ The best way to produce documentation is with roxygen. Just add annotations abov
  #' @description Describe it here
  #' @param x Describe x
  #' @param y Describe y
- #' @returns what it returns
+ #' @return what it returns
  my_function <- function(x,y) { ...
 ```
 
