@@ -4,7 +4,7 @@ Generates a visualization of binary classifier performance as a grid of diagonst
 
 ### Usage
 
-The main function is:
+The main function to use when running R interactively is:
 
 	classifierplots(test.y, pred.prob)
 		
