@@ -4,7 +4,8 @@
 #' @name classifierplots
 NULL
 
-#' @title classifier.plots
+#' \figure{example.png}
+#' @title classifierplots
 #' @description Produce a suit of classifier diagnostic plots
 #' @param test.y List of know labels on the test set
 #' @param pred.prob List of probability predictions on the test set
@@ -21,7 +22,7 @@ classifierplots <- function(test.y, pred.prob) {
   produce_classifier_plots(test.y, pred.prob, show=T)
 }
 
-#' @title classifier.plots
+#' @title classifierplots_folder
 #' @description Produce a suit of classifier diagnostic plots, saving to disk.
 #' @param test.y List of know labels on the test set
 #' @param pred.prob List of probability predictions on the test set

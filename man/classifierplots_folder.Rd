@@ -2,7 +2,7 @@
 % Please edit documentation in R/classifier_plots.R
 \name{classifierplots_folder}
 \alias{classifierplots_folder}
-\title{classifier.plots}
+\title{classifierplots_folder}
 \usage{
 classifierplots_folder(test.y, pred.prob, folder, height = 5, width = 5)
 }

@@ -18,7 +18,7 @@ If you want to save the results to disk as folder of seperate plots as well as a
 
 	classifierplots(example_predictions$test.y, example_predictions$pred.prob) 
  
-![Example](/example.png?raw=true "Example")
+![Example](/man/figures/example.png?raw=true "Example")
 	
 ### Building
 
