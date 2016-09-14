@@ -1,7 +1,5 @@
 
 check_predictions <- function(pred.prob) {
-  suppressMessages(font_install('fontcm'))
-  suppressMessages(loadfonts())
   
   if(max(pred.prob) > 1) {
       stop(paste("Pred.prob not in [0,1]. Max:", max(pred.prob)))
@@ -300,7 +298,7 @@ sensitivity.plot <- function(test.y, pred.prob, granularity=0.02) {
 #' @param smooth Default F. Apply smoothing to the ROC curve. It's a little slow but looks good. Only works with bootstraping on.
 #' @param use_bootstrap Default autodetect. It's really slow for more than say 1k test points, so be aware of this.
 #' @export
-roc.plot <- function(test.y, pred.prob, use_bootstrap=NULL, smooth=F, font="CM Sans") {
+roc.plot <- function(test.y, pred.prob, use_bootstrap=NULL, smooth=F) {
   require(pROC)
   check_classifier_input_and_init(test.y, pred.prob)  
   
@@ -355,7 +353,7 @@ roc.plot <- function(test.y, pred.prob, use_bootstrap=NULL, smooth=F, font="CM S
      geom_abline(slope=1.0, intercept=0, linetype="dotted") +
      annotate("text", x=62.5, y=37.5, 
          label=paste0("AUC ", format(auc, digits=3), "%"), 
-         parse=F, size=7, family=font, colour=fontgrey_str) +
+         parse=F, size=7, colour=fontgrey_str) +
      scale_x_continuous(name="False Positive Rate (%)    (1-Specificity)", 
        limits=c(0.0, 100.0), expand=c(0, 0.3)) +
      scale_y_continuous(name="True Positive Rate (%)    (Sensitivity)", 
@@ -365,7 +363,7 @@ roc.plot <- function(test.y, pred.prob, use_bootstrap=NULL, smooth=F, font="CM S
   if(n < big_data_cutoff) {
       plt <- plt + annotate("text", x=62.5, y=30, 
           label=paste0("95% CI [", format(civ[1], digits=digits_use), ", ", format(civ[3], digits=digits_use), "]"), 
-          parse=F, size=4.5, family=font, colour=fontgrey_str)
+          parse=F, size=4.5, colour=fontgrey_str)
   }
      
   if(use_bootstrap) {

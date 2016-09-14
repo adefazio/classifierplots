@@ -15,6 +15,10 @@ If you want to save the results to disk as folder of seperate plots as well as a
 	classifierplots_folder(test.y, pred.prob, folder)
 
 If your test dataset is larger than about 100,000 instances, we recommend downsampling first to speed things up a little.
+
+Running example_classifierplots() generates the following example plot. It's also a good test that everything is working correctly.
+ 
+![Example](/example.png?raw=true "Example")
 	
 ### Building
 

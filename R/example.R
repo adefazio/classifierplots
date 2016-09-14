@@ -3,6 +3,10 @@ example_classifierplots <- function() {
  classifierplots(example_predictions$test.y, example_predictions$pred.prob) 
 }
 
+example_classifierplots_folder <- function() {
+ classifierplots_folder(example_predictions$test.y, example_predictions$pred.prob, "example_output") 
+}
+
 gen_example <- function() {
   if (!requireNamespace("LiblineaR", quietly = TRUE)) {
     stop("LiblineaR needed for this function to work. Please install it.",
