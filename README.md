@@ -1,51 +1,34 @@
-# R.template
+# Classifierplots
 
-This is a project template for an R package.
+Generates a visualization of binary classifier performance as a grid of diagonstic plots with just one function call. Includes ROC curves, prediction density, precision-recall and calibration plots, all using  ggplot2 for easy modification. Debug your binary classifiers faster and easier!
 
-Once you have cloned this project you need to do a global search for "R.template" and replace it with your application name. Don't forget to change the folder name "R.template" to something better as well.
+### Usage
 
-Then update both DESCRIPTION and project-package.Rd with title, description and author information. Put your library dependencies in DESCRIPTION and import then with import("foo") in NAMESPACE.
+The main function is:
 
-### Development
+	classifierplots(test.y, pred.prob)
+		
+Where you pass in ground truth values test.y and predictions in [0,1] as pred.prob.
 
-In R, within the (renamed) R.templates directory, with the devtools package loaded:
-    
-    load_all()
-    
-Loads the package currently under development. This setup to automatically happen each time you start R within that directory (one down from the project root).
+If you want to save the results to disk as folder of seperate plots as well as a single ALL.pdf grid, use 
 
-### Documenting
+	classifierplots_folder(test.y, pred.prob, folder)
 
-The best way to produce documentation is with roxygen. Just add annotations above each function you want to document like the following:
-
-```
- #' @title my_function
- #' @description Describe it here
- #' @param x Describe x
- #' @param y Describe y
- #' @return what it returns
- my_function <- function(x,y) { ...
-```
-
-Then to produce the .Rd documentation files, call `document()`
-
-### Testing
-In R, within the (renamed) R.templates directory:
-
-    test()
-
+If your test dataset is larger than about 100,000 instances, we recommend downsampling first to speed things up a little.
+	
 ### Building
 
-Run from bash in the root directory:
-    R CMD build <package name>
+Run from bash in the project directory:
+
+    R CMD build .
         
-This produces a tarball.
+This produces a tarball: classifierplots_1.3.1.tar.gz
 
 ### Checking package
 
 After, building run:
 
-    R CMD check <package tarball>
+    R CMD check classifierplots_1.3.1.tar.gz
     
 It will give you a list of things to fix. Ignore the warning related to licencing.
     
@@ -53,4 +36,12 @@ It will give you a list of things to fix. Ignore the warning related to licencin
 
 Run:
     
-    R CMD install <package name>
+    R CMD install classifierplots_1.3.1.tar.gz
+
+
+### Development
+
+In R, just open an R session with the project's directory. All the functions for the package will be imported automatically. To refresh their definitions without restarting R, just run:
+
+	load_all()
+
