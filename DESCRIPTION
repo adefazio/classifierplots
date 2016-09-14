@@ -1,6 +1,5 @@
 Package: classifierplots
-Title: Generates a visualization of classifier performance as a grid of
-    diagonstic plots.
+Title: Generates a Visualization of Classifier Performance as a Grid of Diagonstic Plots
 Version: 1.3.1
 Authors@R: person("Aaron", "Defazio", email = "aaron.defazio@ambiata.com", role = c("aut", "cre"))
 Description: Generates a visualization of binary classifier performance as a grid of
@@ -9,19 +8,18 @@ Description: Generates a visualization of binary classifier performance as a gri
 	ggplot2 for easy modification.
 	Debug your binary classifiers faster and easier!
 Depends:
+	R (>= 3.1),
     ggplot2,
     data.table
 Imports:
-    grDevices,
     grid,
     ROCR,
     pROC,
     gridExtra,
-    scales,
+	stats,
+	utils,
 Suggests:
     testthat,
-	LiblineaR,
-	SVMMaj
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

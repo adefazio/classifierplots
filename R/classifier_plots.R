@@ -1,6 +1,11 @@
 
+#' The main functions you want are \code{\link{classifierplots}} or \code{\link{classifierplots_folder}}.
+#' @docType package
+#' @name classifierplots
+NULL
+
 #' @title classifier.plots
-#' @description Produce a suit of classifier diagnostic plots, saving to disk.
+#' @description Produce a suit of classifier diagnostic plots
 #' @param test.y List of know labels on the test set
 #' @param pred.prob List of probability predictions on the test set
 #' @import data.table ggplot2
@@ -8,6 +13,10 @@
 #' @importFrom ROCR performance
 #' @importFrom ROCR prediction
 #' @export
+#' @examples
+#' \dontrun{
+#'  classifierplots(example_predictions$test.y, example_predictions$pred.prob) 
+#' }
 classifierplots <- function(test.y, pred.prob) {
   produce_classifier_plots(test.y, pred.prob, show=T)
 }
@@ -25,6 +34,12 @@ classifierplots_folder <- function(test.y, pred.prob, folder, height=5, width=5)
 }
 
 #' @importFrom gridExtra grid.arrange
+#' @importFrom grDevices dev.new
+#' @importFrom grDevices dev.off
+#' @importFrom grDevices pdf
+#' @importFrom grDevices quartz
+#' @importFrom grDevices x11
+#' @importFrom utils sessionInfo
 produce_classifier_plots <- function(
   test.y, pred.prob, 
   folder=NULL,
@@ -65,40 +80,40 @@ produce_classifier_plots <- function(
     invisible()
   }
   
-  dens.plt <- density.plot(test.y, pred.prob)
+  dens.plt <- density_plot(test.y, pred.prob)
   saveplot(dens.plt, "density.pdf")
   
-  acc.plt <- accuracy.thresh.plot(test.y, pred.prob)
+  acc.plt <- accuracy_thresh_plot(test.y, pred.prob)
   saveplot(acc.plt, "accuracy.pdf") 
   
-  prec.plt <- precision.thresh.plot(test.y, pred.prob)
+  prec.plt <- precision_thresh_plot(test.y, pred.prob)
   saveplot(prec.plt, "precision.pdf") 
     
-  sen.plt <- sensitivity.thresh.plot(test.y, pred.prob)
+  sen.plt <- sensitivity_thresh_plot(test.y, pred.prob)
   saveplot(sen.plt, "sensitivity.pdf")
 
-  cal.plt <- calibration.plot(test.y, pred.prob)
+  cal.plt <- calibration_plot(test.y, pred.prob)
   saveplot(cal.plt, "calibration.pdf")
   
-  acc.plt.perc <- accuracy.plot(test.y, pred.prob)
+  acc.plt.perc <- accuracy_plot(test.y, pred.prob)
   saveplot(acc.plt.perc, "percentage_accuracy.pdf")
   
-  prec.plt.perc <- precision.plot(test.y, pred.prob)
+  prec.plt.perc <- precision_plot(test.y, pred.prob)
   saveplot(prec.plt.perc, "percentage_precision.pdf")
   
-  sen.plt.perc <- sensitivity.plot(test.y, pred.prob)
+  sen.plt.perc <- sensitivity_plot(test.y, pred.prob)
   saveplot(sen.plt.perc, "percentage_sensitivity.pdf")
   
-  prop.plt.perc <- propensity.plot(test.y, pred.prob)
+  prop.plt.perc <- propensity_plot(test.y, pred.prob)
   saveplot(prop.plt.perc, "percentage_propensity.pdf")
   
   
   # Less ugly ROC curve
-  roc.plt <- roc.plot(test.y, pred.prob)
+  roc.plt <- roc_plot(test.y, pred.prob)
   saveplot(roc.plt, "ROC.pdf")
   
   # lift plot
-  lift.plt <- lift.plot(test.y, pred.prob)
+  lift.plt <- lift_plot(test.y, pred.prob)
   saveplot(lift.plt, "lift.pdf")
   
   if(!is.null(folder)) {
@@ -112,23 +127,8 @@ produce_classifier_plots <- function(
   }
   
   if(show) {
-   dev.new.mine(width=25, height=13)
+   dev.new(width=25, height=13, dpi=55)
    return(gridExtra::grid.arrange(roc.plt, prop.plt.perc, lift.plt, cal.plt,
           dens.plt, acc.plt.perc, prec.plt.perc, sen.plt.perc, ncol=4)) 
   }
 }
-
-dev.new.mine <- function(width = 7, height = 7) { 
-  platform <- sessionInfo()$platform 
-  
-  if (grepl("linux",platform)) { 
-    x11(width=width, height=height)
-  } else if (grepl("pc",platform)) { 
-    windows(width=width, height=height) 
-  } else if (grepl("apple", platform)) { 
-    quartz(width=width, height=height, dpi=55) 
-  } else {
-    dev.new(width=width, height=height) 
-  }
-}
-

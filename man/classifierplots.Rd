@@ -12,6 +12,11 @@ classifierplots(test.y, pred.prob)
 \item{pred.prob}{List of probability predictions on the test set}
 }
 \description{
-Produce a suit of classifier diagnostic plots, saving to disk.
+Produce a suit of classifier diagnostic plots
+}
+\examples{
+\dontrun{
+ classifierplots(example_predictions$test.y, example_predictions$pred.prob) 
+}
 }
 

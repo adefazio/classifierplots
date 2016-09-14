@@ -25,15 +25,19 @@ check_classifier_input_and_init <- function(test.y, pred.prob) {
 }
 
 
-#' @title density.plot
+#' @title density_plot
 #' @description Returns a ggplot2 plot object containing a score density plot.
 #' If you have trouble displaying, it might be due to the font. Override by passing in something like "Sans" 
 #' @param test.y List of know labels on the test set
 #' @param pred.prob List of probability predictions on the test set
 #' @importFrom grid textGrob
 #' @importFrom grid gpar
+#' @importFrom stats dnorm
+#' @importFrom stats qbeta
+#' @importFrom stats quantile
+#' @importFrom stats sd
 #' @export
-density.plot <- function(test.y, pred.prob) {
+density_plot <- function(test.y, pred.prob) {
   check_classifier_input_and_init(test.y, pred.prob)  
   print("Generating score density plot")
   ground.truth <- factor(test.y)
@@ -49,7 +53,7 @@ density.plot <- function(test.y, pred.prob) {
     limits <- c(1.0, 0.0)
   }
   
-  annotation <- paste0("Test set size: ", length(test.y), 
+  annotation <- paste0("Test set size: ", ifelse(length(test.y)==500000, ">= 500,000", length(test.y)), 
     "\nNegative cases: ", format(100*sum(test.y != 1)/length(test.y), digits=3), 
     "%\nPositive cases:   ", format(100*sum(test.y == 1)/length(test.y), digits=3), "%")
   
@@ -68,13 +72,13 @@ density.plot <- function(test.y, pred.prob) {
 
 
 
-#' @title accuracy.thresh.plot
+#' @title accuracy_thresh_plot
 #' @description Returns a ggplot2 plot object containing an accuracy @@ threshold plot
 #' @param test.y List of know labels on the test set
 #' @param pred.prob List of probability predictions on the test set
 #' @param granularity Default 0.02, probability step between points in plot.
 #' @export
-accuracy.thresh.plot <- function(test.y, pred.prob, granularity=0.02) {
+accuracy_thresh_plot <- function(test.y, pred.prob, granularity=0.02) {
   check_classifier_input_and_init(test.y, pred.prob)  
   step_array <- seq(0.0, 1.0, by=granularity)
   accuracy_tbl <- data.table(threshold=step_array)
@@ -88,13 +92,13 @@ accuracy.thresh.plot <- function(test.y, pred.prob, granularity=0.02) {
     ggtitle("Accuracy as a function of threshold"))
 }
 
-#' @title precision.thresh.plot
+#' @title precision_thresh_plot
 #' @description Returns a ggplot2 plot object containing an precision @@ threshold plot
 #' @param test.y List of know labels on the test set
 #' @param pred.prob List of probability predictions on the test set
 #' @param granularity Default 0.02, probability step between points in plot.
 #' @export
-precision.thresh.plot <- function(test.y, pred.prob, granularity=0.02) {
+precision_thresh_plot <- function(test.y, pred.prob, granularity=0.02) {
   check_classifier_input_and_init(test.y, pred.prob)  
   print(paste0("Producing precision @ threshold plot"))
   step_array <- seq(0.0, 1.0, by=granularity)
@@ -108,13 +112,13 @@ precision.thresh.plot <- function(test.y, pred.prob, granularity=0.02) {
     ggtitle("Precision-threshold"))
 }
 
-#' @title sensitivity.thresh.plot
+#' @title sensitivity_thresh_plot
 #' @description Returns a ggplot2 plot object containing an sensitivity @@ threshold plot
 #' @param test.y List of know labels on the test set
 #' @param pred.prob List of probability predictions on the test set
 #' @param granularity Default 0.02, probability step between points in plot.
 #' @export
-sensitivity.thresh.plot <- function(test.y, pred.prob, granularity=0.02) {
+sensitivity_thresh_plot <- function(test.y, pred.prob, granularity=0.02) {
   check_classifier_input_and_init(test.y, pred.prob)  
   step_array <- seq(0.0, 1.0, by=granularity)
   sensitivity_tbl <- data.table(threshold=step_array)
@@ -128,13 +132,13 @@ sensitivity.thresh.plot <- function(test.y, pred.prob, granularity=0.02) {
 }
 
 
-#' @title accuracy.plot
+#' @title accuracy_plot
 #' @description Returns a ggplot2 plot object containing an accuracy @@ percentile plot
 #' @param test.y List of know labels on the test set
 #' @param pred.prob List of probability predictions on the test set
 #' @param granularity Default 0.02, probability step between points in plot.
 #' @export
-accuracy.plot <- function(test.y, pred.prob, granularity=0.02) {
+accuracy_plot <- function(test.y, pred.prob, granularity=0.02) {
   check_classifier_input_and_init(test.y, pred.prob)  
   step_array <- seq(0.0, 1.0, by=granularity)
   thesh_steps <- round(quantile(pred.prob, step_array), digits=4)
@@ -148,13 +152,13 @@ accuracy.plot <- function(test.y, pred.prob, granularity=0.02) {
     ggtitle("Accuracy-Recall"))
 }
 
-#' @title propensity.plot
+#' @title propensity_plot
 #' @description Returns a ggplot2 plot object containing an propensity @@ percentile plot
 #' @param test.y List of know labels on the test set
 #' @param pred.prob List of probability predictions on the test set
 #' @param granularity Default 0.02, probability step between points in plot.
 #' @export
-propensity.plot <- function(test.y, pred.prob, granularity=0.02) {
+propensity_plot <- function(test.y, pred.prob, granularity=0.02) {
   check_classifier_input_and_init(test.y, pred.prob)  
   step_array <- seq(0.0, 1.0, by=granularity)
   thesh_steps <- round(quantile(pred.prob, step_array), digits=4)
@@ -173,13 +177,13 @@ propensity.plot <- function(test.y, pred.prob, granularity=0.02) {
     ggtitle("Positive percentage of selected"))
 }
 
-#' @title calibration.plot
+#' @title calibration_plot
 #' @description Returns a ggplot2 plot object containing a smoothed propensity @@ prediction level plot
 #' @param test.y List of know labels on the test set
 #' @param pred.prob List of probability predictions on the test set
 #' @param granularity Default 0.02, probability step between points in plot.
 #' @export
-calibration.plot <- function(test.y, pred.prob, granularity=0.02) {
+calibration_plot <- function(test.y, pred.prob, granularity=0.02) {
   check_classifier_input_and_init(test.y, pred.prob)  
   step_array <- seq(0.0, 1.0, by=granularity)
   thesh_steps <- round(quantile(pred.prob, step_array), digits=4)
@@ -213,14 +217,14 @@ calibration.plot <- function(test.y, pred.prob, granularity=0.02) {
     ggtitle("Calibration"))
 }
 
-#' @title precision.plot
+#' @title precision_plot
 #' @description Returns a ggplot2 plot object containing an precision @@ percentile plot
 #' @param test.y List of know labels on the test set
 #' @param pred.prob List of probability predictions on the test set
 #' @param granularity Default 0.02, probability step between points in plot.
 #' @param show_numbers Show numbers at deciles T/F default T.
 #' @export
-precision.plot <- function(test.y, pred.prob, granularity=0.02, show_numbers=T) {
+precision_plot <- function(test.y, pred.prob, granularity=0.02, show_numbers=T) {
   check_classifier_input_and_init(test.y, pred.prob)  
   step_array <- seq(0.0, 1.0, by=granularity)
   thesh_steps <- round(quantile(pred.prob, step_array), digits=4)
@@ -267,13 +271,13 @@ precision.plot <- function(test.y, pred.prob, granularity=0.02, show_numbers=T) 
     ggtitle("Precision-Recall"))
 }
 
-#' @title sensitivity.plot
+#' @title sensitivity_plot
 #' @description Returns a ggplot2 plot object containing an sensitivity @@ percentile plot
 #' @param test.y List of know labels on the test set
 #' @param pred.prob List of probability predictions on the test set
 #' @param granularity Default 0.02, probability step between points in plot.
 #' @export
-sensitivity.plot <- function(test.y, pred.prob, granularity=0.02) {
+sensitivity_plot <- function(test.y, pred.prob, granularity=0.02) {
   check_classifier_input_and_init(test.y, pred.prob)  
   step_array <- seq(0.0, 1.0, by=granularity)
   thesh_steps <- round(quantile(pred.prob, step_array), digits=4)
@@ -290,16 +294,14 @@ sensitivity.plot <- function(test.y, pred.prob, granularity=0.02) {
     ggtitle("Sensitivity-Recall"))
 }
 
-#' @title roc.plot
+#' @title roc_plot
 #' @description A non-ugly ROC curve! Returns a ggplot2 plot object.
 #' @param test.y List of know labels on the test set
 #' @param pred.prob List of probability predictions on the test set
-#' @param font You can override the font here.
 #' @param smooth Default F. Apply smoothing to the ROC curve. It's a little slow but looks good. Only works with bootstraping on.
 #' @param use_bootstrap Default autodetect. It's really slow for more than say 1k test points, so be aware of this.
 #' @export
-roc.plot <- function(test.y, pred.prob, use_bootstrap=NULL, smooth=F) {
-  require(pROC)
+roc_plot <- function(test.y, pred.prob, use_bootstrap=NULL, smooth=F) {
   check_classifier_input_and_init(test.y, pred.prob)  
   
   n <- length(test.y)
@@ -373,7 +375,7 @@ roc.plot <- function(test.y, pred.prob, use_bootstrap=NULL, smooth=F) {
   return(plt)
 }
 
-lift.plot <- function(test.y, pred.prob) {
+lift_plot <- function(test.y, pred.prob) {
   check_classifier_input_and_init(test.y, pred.prob)  
   
   nbuckets = 10
@@ -397,5 +399,9 @@ lift.plot <- function(test.y, pred.prob) {
 }
   
 
-# Suppress some warnings
-utils::suppressForeignCheck(c("Prediction", "Ground Truth", "accuracy", "threshold", "precision", "sensitivity", "percentage", "fpr", "tpr"))
+# Variables used in data.table expressions have to be defined here
+utils::globalVariables(c(
+  "Prediction", "Ground Truth", "accuracy", "threshold", 
+  "precision", "sensitivity", "percentage", "fpr", "tpr",
+  "propensity", "positive_perc", "bucket", "dec_lbl", "part",
+  "ymin", "ymax", "sensitivity_lb", "sensitivity_ub"))
