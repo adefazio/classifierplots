@@ -2,11 +2,13 @@
 check_predictions <- function(pred.prob) {
   
   if(max(pred.prob) > 1) {
-      stop(paste("Pred.prob not in [0,1]. Max:", max(pred.prob)))
+      stop(paste("Pred.prob not in [0,1]. Max:", max(pred.prob),
+        ". You can use the sigmoid(x) function in this package to map to [0,1]."))
   } 
   
   if(min(pred.prob) < 0) {
-      stop(paste("Pred.prob not in [0,1]. Min:", min(pred.prob)))
+      stop(paste("Pred.prob not in [0,1]. Min:", min(pred.prob),
+        ". You can use the sigmoid(x) function in this package to map to [0,1]."))
   } 
 }
 
@@ -22,12 +24,18 @@ check_classifier_input_and_init <- function(test.y, pred.prob) {
   if(sum(yvals == 1.0) != 1) {
     stop(paste("This code expects test.y to be numerical, with the positive class indicated by '1'. There was no 1 in test.y!"))
   }
+  
+  check_predictions(pred.prob)
 }
 
+#' @title sigmoid
+#' @description Logistic sigmoid function, that maps any real number to the [0,1] interval. Supports vectors of numeric.
+#' @param x data
+#' @export
+sigmoid <- function(x) { 1.0/(1.0+exp(-x)) }
 
 #' @title density_plot
 #' @description Returns a ggplot2 plot object containing a score density plot.
-#' If you have trouble displaying, it might be due to the font. Override by passing in something like "Sans" 
 #' @param test.y List of know labels on the test set
 #' @param pred.prob List of probability predictions on the test set
 #' @importFrom grid textGrob
@@ -45,7 +53,6 @@ density_plot <- function(test.y, pred.prob) {
   
   mp <- max(quantile(pred.prob[ground.truth == 1], 0.95), 
             quantile(pred.prob[ground.truth != 1], 0.95))
-  print(mp)
   
   if(mp < 0.4) {
     limits <- c(mp*1.1, 0.0)
@@ -137,18 +144,32 @@ sensitivity_thresh_plot <- function(test.y, pred.prob, granularity=0.02) {
 #' @param test.y List of know labels on the test set
 #' @param pred.prob List of probability predictions on the test set
 #' @param granularity Default 0.02, probability step between points in plot.
+#' @param show_numbers Show values as numbers above the plot line
 #' @export
-accuracy_plot <- function(test.y, pred.prob, granularity=0.02) {
+accuracy_plot <- function(test.y, pred.prob, granularity=0.02, show_numbers=T) {
   check_classifier_input_and_init(test.y, pred.prob)  
   step_array <- seq(0.0, 1.0, by=granularity)
   thesh_steps <- round(quantile(pred.prob, step_array), digits=4)
   accuracy_tbl_perc <- data.table(percentage=100 - 100*step_array, threshold=thesh_steps)
   accuracy_tbl_perc[, accuracy := sapply(threshold, function(x) accuracy_at_threshold(x, test.y, pred.prob))]
+  accuracy_tbl_perc[, accuracy_lb := sapply(threshold, function(x) accuracy_at_threshold_p(0.025, x, test.y, pred.prob))]
+  accuracy_tbl_perc[, accuracy_ub := sapply(threshold, function(x) accuracy_at_threshold_p(0.975, x, test.y, pred.prob))]
+  
+  if(show_numbers) {
+    deciles <- seq(0, 100, 10)
+    accuracy_tbl_perc[percentage %in% deciles, dec_lbl := paste0(format(100*accuracy, digits=2), "%")]
+    numbers <- geom_text(aes(x=percentage, y=102*accuracy, label=dec_lbl), 
+              hjust=0.3, vjust=-1.0, size=4, color=I(blue_str))
+  } else {
+    numbers <- NULL
+  }
 
   return(ggplot(accuracy_tbl_perc, aes(x=percentage, y=100.0*accuracy)) + 
+    geom_ribbon(aes(ymin=100.0*accuracy_lb, ymax=100.0*accuracy_ub), fill=green_str, alpha="0.2") + 
     geom_line(color=green_str, size=1.5) + classifier_theme + classifier_colours + 
     scale_x_continuous(name="Recall (% thresholded to positive class)", breaks=seq(0.0, 100.0, 10.0)) + 
     scale_y_continuous(name="Accuracy (%)", limits=c(0,100), breaks=seq(0.0, 100.0, 10.0)) + 
+    numbers + 
     ggtitle("Accuracy-Recall"))
 }
 
@@ -172,9 +193,9 @@ propensity_plot <- function(test.y, pred.prob, granularity=0.02) {
   
   return(ggplot(propensity_tbl_perc, aes(x=percentage, y=100.0*propensity)) + 
     geom_line(color=green_str, size=1.5) + classifier_theme + classifier_colours + 
-    scale_x_continuous(name="selection point (%)", breaks=seq(0.0, 100.0, 10.0)) + 
-    scale_y_continuous(name="Propensity of selected (%)") + 
-    ggtitle("Positive percentage of selected"))
+    scale_x_continuous(name="Decile (non-cumulative %)", breaks=seq(0.0, 100.0, 10.0)) + 
+    scale_y_continuous(name="Smoothed positive (%)") + 
+    ggtitle("Positive rate (rolling window)"))
 }
 
 #' @title calibration_plot
@@ -197,7 +218,7 @@ calibration_plot <- function(test.y, pred.prob, granularity=0.02) {
   }
   
   window_radius <- abs(thesh_steps[2] - thesh_steps[length(thesh_steps)-1])/window_split
-  print(paste("Window radius: ", window_radius))
+  #print(paste("Window radius: ", window_radius))
   
   propensity_tbl_perc <- data.table(
     part=1:length(step_array), percentage=100*step_array, 
@@ -212,8 +233,8 @@ calibration_plot <- function(test.y, pred.prob, granularity=0.02) {
   return(ggplot(propensity_tbl_perc, aes(x=100*threshold, y=100.0*propensity)) + 
     geom_line(color=green_str, size=1.5) + classifier_theme + classifier_colours + 
     geom_abline(slope=1.0, intercept=0, linetype="dotted") + 
-    scale_x_continuous(name="Predicted propensity (%)", limits=c(0,100.0*range_max)) + 
-    scale_y_continuous(name="Smoothed true propensity(%)", limits=c(0,100.0*range_max)) + 
+    scale_x_continuous(name="Predicted probability (%)", limits=c(0,100.0*range_max)) + 
+    scale_y_continuous(name="Smoothed true probability (%)", limits=c(0,100.0*range_max)) + 
     ggtitle("Calibration"))
 }
 
@@ -230,6 +251,9 @@ precision_plot <- function(test.y, pred.prob, granularity=0.02, show_numbers=T) 
   thesh_steps <- round(quantile(pred.prob, step_array), digits=4)
   precision_tbl_perc <- data.table(percentage=100 - 100*step_array, threshold=thesh_steps)
   precision_tbl_perc[, precision := 100.0*sapply(threshold, function(x) precision_at_threshold(x, test.y, pred.prob))]
+  precision_tbl_perc[, precision_lb := sapply(threshold, function(x) precision_at_threshold_p(0.025, x, test.y, pred.prob))]
+  precision_tbl_perc[, precision_ub := sapply(threshold, function(x) precision_at_threshold_p(0.975, x, test.y, pred.prob))]
+  
 
   if(show_numbers) {
     deciles <- seq(10, 100, 10)
@@ -264,6 +288,7 @@ precision_plot <- function(test.y, pred.prob, granularity=0.02, show_numbers=T) 
   }
   
   return(ggplot(precision_tbl_perc, aes(x=percentage, y=precision)) + 
+    geom_ribbon(aes(ymin=100.0*precision_lb, ymax=100.0*precision_ub), fill=green_str, alpha="0.2") + 
     geom_line(color=green_str, size=1.5) +  classifier_theme + classifier_colours +
     scale_x_continuous(name="Recall (% thesholded to positive class)", breaks=seq(0.0, 100.0, 10.0)) + 
     scale_y_continuous(name="Precision (% of positive predictions that are correct)", limits=limits, breaks=breaks) + 
@@ -287,7 +312,7 @@ sensitivity_plot <- function(test.y, pred.prob, granularity=0.02) {
   sensitivity_tbl_perc[, sensitivity_ub := sapply(threshold, function(x) sensitivity_at_threshold_p(0.975, x, test.y, pred.prob))]
   
   return(ggplot(sensitivity_tbl_perc, aes(x=percentage, y=100.0*sensitivity)) + 
-    geom_ribbon(aes(ymin=100.0*sensitivity_lb, ymax=100.0*sensitivity_ub), fill=green_str, alpha="0.4") + 
+    geom_ribbon(aes(ymin=100.0*sensitivity_lb, ymax=100.0*sensitivity_ub), fill=green_str, alpha="0.2") + 
     geom_line(color=green_str, size=1.5) + classifier_theme + classifier_colours +
     scale_x_continuous(name="Recall (% thesholded to positive class)") + 
     scale_y_continuous(name="Sensitivity (% of positive cases correctly predicted)", limits=c(0,100)) + 
@@ -369,10 +394,10 @@ roc_plot <- function(test.y, pred.prob, use_bootstrap=NULL, smooth=F) {
   }
      
   if(use_bootstrap) {
-    plt <- plt + geom_ribbon(aes(ymin=100.0*ymin, ymax=100.0*ymax), fill=green_str, alpha="0.4")
+    plt <- plt + geom_ribbon(aes(ymin=100.0*ymin, ymax=100.0*ymax), fill=green_str, alpha="0.2")
   }
     
-  return(plt)
+  return(plt + ggtitle("ROC"))
 }
 
 lift_plot <- function(test.y, pred.prob) {
@@ -385,16 +410,23 @@ lift_plot <- function(test.y, pred.prob) {
     in_bucket_indicator <- pred.prob < bucket_quantiles[bucket] & pred.prob >= bucket_quantiles[bucket+1]
     bucket_size <- sum(in_bucket_indicator)
     positive <- sum(test.y[in_bucket_indicator] == 1)
-    return(positive/bucket_size)
+    return(qbeta(c(llb=0.025, lb=0.25, y=0.5, ub=0.75, uub=0.965), positive, positive+bucket_size))
   }
   lift_tbl <- data.table(bucket = 1:nbuckets, percentage = 100.0-bucket_array[1:nbuckets]*100)
-  lift_tbl[, positive_perc := 100.0*sapply(bucket, positive_in_bucket)]
+  lift_tbl <- cbind(lift_tbl, 100*t(sapply(lift_tbl$bucket, positive_in_bucket)))
 
-  return(ggplot(lift_tbl, aes(x=percentage, y=positive_perc)) + 
-    geom_bar(fill=green_str, stat="identity", position="identity") + 
+  if(length(test.y) > 50000) {
+    text_color <- blue_str
+  } else {
+    text_color <- "white"
+  }
+
+  return(ggplot(lift_tbl, aes(x=percentage, y=y, ymin=llb, lower=lb, middle=y, upper=ub, ymax=uub)) + 
+    geom_ambiboxplot(fill=green_str, stat="identity", position="identity", width=6) + 
+    geom_text(aes(label=paste0(format(y, digits=2), "%")), hjust=0.5, vjust=-1.1, size=4, color=I(text_color)) + 
     classifier_theme + classifier_colours +
-    scale_x_continuous(name="Decile (non-cumulative %)", breaks=seq(0.0, 100.0, 10.0)) + 
-    scale_y_continuous(name="Propensity (%)") + 
+    scale_x_continuous(name="Instance decile (non-cumulative %)", breaks=seq(0.0, 100.0, 10.0)) + 
+    scale_y_continuous(name="Positive instances in decile (%)") +
     ggtitle("Positive instances per decile"))
 }
   

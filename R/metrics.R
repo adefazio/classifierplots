@@ -38,33 +38,45 @@ propensity_at_prediction_level <- function(test.y, prob.y, pred.level, window_ra
   return(rate_prop)
 }
 
-accuracy_at_threshold <- function(threshold, test.y, prob.y) {
+# accuracy correct/n
+accuracy_at_threshold_p <- function(p, threshold, test.y, prob.y) {
   test.y.bin <- test.y == 1
   pred.y.bin <- prob.y >= threshold
   correct = sum(pred.y.bin == test.y.bin)
-  return(correct/length(test.y))
+  #return(correct/length(test.y))
+  return(qbeta(p, correct, length(test.y)-correct))
 }
 
-precision_at_threshold <- function(threshold, test.y, prob.y) {
+accuracy_at_threshold <- function(threshold, test.y, prob.y) {
+  return(accuracy_at_threshold_p(0.5, threshold, test.y, prob.y))
+}
+
+
+# precision TP/(TP+FP)
+precision_at_threshold_p <- function(p, threshold, test.y, prob.y) {
   test.y.bin <- test.y == 1
   pred.y.bin <- prob.y >= threshold
   true_positives <- sum(pred.y.bin & test.y.bin)
   false_positives <- sum(pred.y.bin & (!test.y.bin))
-  return(true_positives/(true_positives+false_positives))
+  return(qbeta(p, true_positives, false_positives))
 }
 
-sensitivity_at_threshold <- function(threshold, test.y, prob.y) {
-  test.y.bin <- test.y == 1
-  pred.y.bin <- prob.y >= threshold
-  true_positives <- sum(pred.y.bin & test.y.bin)
-  return(true_positives/sum(test.y.bin))
+precision_at_threshold <- function(threshold, test.y, prob.y) {
+  return(precision_at_threshold_p(0.5, threshold, test.y, prob.y))
 }
 
-# Posterior quantiles of sensitivity
+
+#tmp[,`:=`(tmax = qbeta(0.05, cs * .I, .I - cs * .I), tmin = qbeta(0.95, cs * .I, .I - cs * .I )) ]
+
+# Posterior quantiles of sensitivity (TP/P)
 sensitivity_at_threshold_p <- function(p, threshold, test.y, prob.y) {
   test.y.bin <- test.y == 1
   pred.y.bin <- prob.y >= threshold
   true_positives <- sum(pred.y.bin & test.y.bin)
   return(qbeta(p, true_positives, sum(test.y.bin)-true_positives))
+}
+
+sensitivity_at_threshold <- function(threshold, test.y, prob.y) {
+  return(sensitivity_at_threshold_p(0.5, threshold, test.y, prob.y))
 }
 

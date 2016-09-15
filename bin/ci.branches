@@ -1,6 +1,6 @@
 #!/bin/sh -exu
 
-# 'creating R.template package'
+# 'creating classifierplots package'
 
 export R_LIBS_USER=/var/lib/jenkins/lib/R/library
 
@@ -13,11 +13,11 @@ commish=$(git log --pretty=format:%h -n 1)
 time=$(date '+%Y%m%d%H%M%S')
 version=$time-$commish
 
-artefact=$work_dir/R.template.tgz
+artefact=$work_dir/classifierplots.tgz
 
-tar -cvf $artefact R.template
+tar -cvf $artefact classifierplots
 
 R CMD check --no-manual $artefact
 
 rm -rf $work_dir
-rm -rf R.template.Rcheck/
+rm -rf classifierplots.Rcheck/
