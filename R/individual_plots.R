@@ -253,8 +253,8 @@ sensitivity_plot <- function(test.y, pred.prob, granularity=0.02) {
     geom_ribbon(aes(ymin=100.0*sensitivity_lb, ymax=100.0*sensitivity_ub), fill=green_str, alpha="0.2") + 
     geom_line(color=green_str, size=1.5) + classifier_theme + classifier_colours +
     scale_x_continuous(name="k% (thresholded to positive class)", breaks=seq(0.0, 100.0, 10.0), limits=c(0,100), expand=c(0, 0.3)) + 
-    scale_y_continuous(name="Sensitivity (% of positive cases correctly predicted)", breaks=seq(0.0, 100.0, 10.0), limits=c(0,100), expand=c(0, 0.3)) + 
-    ggtitle("Sensitivity @ k"))
+    scale_y_continuous(name="Recall", breaks=seq(0.0, 100.0, 10.0), limits=c(0,100), expand=c(0, 0.3)) + 
+    ggtitle("Recall @ k"))
 }
 
 lift_plot <- function(test.y, pred.prob) {

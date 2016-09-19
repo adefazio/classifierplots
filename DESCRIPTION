@@ -19,6 +19,7 @@ Imports:
     gridExtra,
 	stats,
 	utils,
+	png,
 Suggests:
     testthat,
 License: MIT + file LICENSE

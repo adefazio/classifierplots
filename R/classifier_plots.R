@@ -96,8 +96,9 @@ produce_classifier_plots <- function(
   sen.plt.perc <- sensitivity_plot(test.y, pred.prob)
   saveplot(sen.plt.perc, "percentage_sensitivity.pdf")
   
-  prop.plt.perc <- propensity_plot(test.y, pred.prob)
-  saveplot(prop.plt.perc, "percentage_propensity.pdf")
+  #prop.plt.perc <- propensity_plot(test.y, pred.prob)
+  #saveplot(prop.plt.perc, "percentage_propensity.pdf")
+  notat.plt <- notation_key_plot()
   
   roc.plt <- roc_plot(test.y, pred.prob)
   saveplot(roc.plt, "ROC.pdf")
@@ -109,7 +110,7 @@ produce_classifier_plots <- function(
     print("Saving all plots in one file ...")
     all.plt.full.name <- paste0(folder, "/ALL.pdf")
     pdf(file=all.plt.full.name, width=25, height=13)
-    gridExtra::grid.arrange(roc.plt, prop.plt.perc, lift.plt, cal.plt,
+    gridExtra::grid.arrange(roc.plt, lift.plt, cal.plt, notat.plt,
                  dens.plt, acc.plt.perc, prec.plt.perc, sen.plt.perc, ncol=4)
     dev.off()
     print(paste("Saved plot:", all.plt.full.name))
@@ -117,7 +118,7 @@ produce_classifier_plots <- function(
   
   if(show) {
    dev.new(width=25, height=13, dpi=55)
-   return(gridExtra::grid.arrange(roc.plt, prop.plt.perc, lift.plt, cal.plt,
+   return(gridExtra::grid.arrange(roc.plt, lift.plt, cal.plt, notat.plt,
           dens.plt, acc.plt.perc, prec.plt.perc, sen.plt.perc, ncol=4)) 
   }
 }

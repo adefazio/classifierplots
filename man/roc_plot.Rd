@@ -4,14 +4,18 @@
 \alias{roc_plot}
 \title{roc_plot}
 \usage{
-roc_plot(test.y, pred.prob)
+roc_plot(test.y, pred.prob, resamps = 2000, force_bootstrap = NULL)
 }
 \arguments{
 \item{test.y}{List of know labels on the test set}
 
 \item{pred.prob}{List of probability predictions on the test set}
+
+\item{resamps}{How many bootstrap samples to use}
+
+\item{force_bootstrap}{True/False to force or force off bootstrapping.}
 }
 \description{
-A non-ugly ROC curve! Returns a ggplot2 plot object.
+Produces a smoothed ROC curve as a ggplot2 plot object. A confidence interval is produced using bootstrapping, although it is turned off by default if you have a large dataset.
 }
 
