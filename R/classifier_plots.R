@@ -83,15 +83,6 @@ produce_classifier_plots <- function(
   
   dens.plt <- density_plot(test.y, pred.prob)
   saveplot(dens.plt, "density.pdf")
-  
-  acc.plt <- accuracy_thresh_plot(test.y, pred.prob)
-  saveplot(acc.plt, "accuracy.pdf") 
-  
-  prec.plt <- precision_thresh_plot(test.y, pred.prob)
-  saveplot(prec.plt, "precision.pdf") 
-    
-  sen.plt <- sensitivity_thresh_plot(test.y, pred.prob)
-  saveplot(sen.plt, "sensitivity.pdf")
 
   cal.plt <- calibration_plot(test.y, pred.prob)
   saveplot(cal.plt, "calibration.pdf")
@@ -108,12 +99,9 @@ produce_classifier_plots <- function(
   prop.plt.perc <- propensity_plot(test.y, pred.prob)
   saveplot(prop.plt.perc, "percentage_propensity.pdf")
   
-  
-  # Less ugly ROC curve
   roc.plt <- roc_plot(test.y, pred.prob)
   saveplot(roc.plt, "ROC.pdf")
   
-  # lift plot
   lift.plt <- lift_plot(test.y, pred.prob)
   saveplot(lift.plt, "lift.pdf")
   

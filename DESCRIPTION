@@ -15,6 +15,7 @@ Imports:
     grid,
     ROCR,
     pROC,
+	caret,
     gridExtra,
 	stats,
 	utils,
