@@ -16,10 +16,10 @@ positives_plot <- function(test.y, pred.prob) {
     positive <- sum(test.y[in_bucket_indicator] == 1)
     return(qbeta(c(llb=0.025, lb=0.25, y=0.5, ub=0.75, uub=0.965), positive, bucket_size-positive))
   }
-  lift_tbl <- data.table(bucket = 1:nbuckets, percentage = 100.0-bucket_array[1:nbuckets]*100)
-  lift_tbl <- cbind(lift_tbl, 100*t(sapply(lift_tbl$bucket, positive_in_bucket)))
+  tbl <- data.table(bucket = 1:nbuckets, percentage = 100.0-bucket_array[1:nbuckets]*100)
+  tbl <- cbind(tbl, 100*t(sapply(tbl$bucket, positive_in_bucket)))
 
-  return(ggplot(lift_tbl, aes(x=percentage, y=y, ymin=llb, lower=lb, middle=y, upper=ub, ymax=uub)) + 
+  return(ggplot(tbl, aes(x=percentage, y=y, ymin=llb, lower=lb, middle=y, upper=ub, ymax=uub)) + 
     geom_ambiboxplot(fill=green_str, stat="identity", position="identity", width=8) + 
     classifier_theme + classifier_colours +
     scale_x_continuous(name="Instance decile (non-cumulative %)", breaks=seq(0.0, 100.0, 10.0)) + 

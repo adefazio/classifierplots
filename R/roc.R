@@ -1,3 +1,28 @@
+
+#' @title calculate_auc
+calculate_auc <- function(test.y, pred.prob) {
+  n <- length(test.y)
+  
+  print("(AUC) Sorting data ...")
+  test.y.bin <- test.y == 1
+	roc_tbl <- data.table(y=test.y.bin, preds=pred.prob)
+  roc_tbl <- roc_tbl[order(preds)]
+  
+	npositives <- sum(test.y.bin)
+	nnegatives <- n - npositives
+  
+  print("(AUC) Calculating ranks ...")
+  # Main AUC calcuation. We use the MW-U stat equivalence,
+  # since it's a little faster to calculate.
+  # Note that tied predictions are given a rank equal to the mean of the tied set.
+	roc_tbl[, rank := mean(.I), by=preds]
+  
+	r1 <- roc_tbl[y == T, sum(rank)]
+	u1 <- r1 - (npositives*(npositives+1))/2.0
+	auc <- 100*u1/(npositives*nnegatives)
+  return(auc)
+}
+
 #' @title roc_plot
 #' @description Produces a smoothed ROC curve as a ggplot2 plot object. A confidence interval is produced using bootstrapping, although it is turned off by default if you have a large dataset.
 #' @param test.y List of know labels on the test set
@@ -13,25 +38,14 @@ roc_plot <- function(test.y, pred.prob, resamps=2000, force_bootstrap=NULL) {
 	test.y.bin <- test.y == 1
 	nbins <- 50
   	
-  print("Sorting data ...")
-	roc_tbl <- data.table(y=test.y.bin, preds=pred.prob)
-  roc_tbl <- roc_tbl[order(preds)]
-
-	npositives <- sum(roc_tbl$y)
+	npositives <- sum(test.y.bin)
 	nnegatives <- n - npositives
   
 	negative_steps <- floor(nnegatives/50.0)
   negative_steps <- floor(nnegatives/nbins)
 
   print("Calculating AUC ...")
-  # Main AUC calcuation. We use the MW-U stat equivalence,
-  # since it's a little faster to calculate.
-  # Note that tied predictions are given a rank equal to the mean of the tied set.
-	roc_tbl[, rank := mean(.I), by=preds]
-  
-	r1 <- roc_tbl[y == T, sum(rank)]
-	u1 <- r1 - (npositives*(npositives+1))/2.0
-	auc <- 100*u1/(npositives*nnegatives)
+  auc <- calculate_auc(test.y, pred.prob)
   print(paste("AUC:", auc))
   
   # No point in the ci calculation for large datasets

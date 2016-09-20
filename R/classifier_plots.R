@@ -61,14 +61,7 @@ produce_classifier_plots <- function(
   }
   
   if(!is.null(folder)) {
-    # Main ROCR object
-    rocr_pred <- prediction(pred.prob, test.y)
-  
-    print("Calculating AUC")
-    auc.perf <- performance(rocr_pred,"auc"); 
-    auc <- as.numeric(auc.perf@y.values)
-  
-    print(paste("AUC is", auc)) 
+    auc <- calculate_auc(test.y, pred.prob)
     write(auc, file=paste0(folder, "/auc.txt"))
   }
   
@@ -81,44 +74,45 @@ produce_classifier_plots <- function(
     invisible()
   }
   
-  dens.plt <- density_plot(test.y, pred.prob)
-  saveplot(dens.plt, "density.pdf")
+  roc.plt <- roc_plot(test.y, pred.prob)
+  saveplot(roc.plt, "ROC.pdf")
+  
+  positives.plt <- positives_plot(test.y, pred.prob)
+  saveplot(positives.plt, "positives.pdf")
 
   cal.plt <- calibration_plot(test.y, pred.prob)
   saveplot(cal.plt, "calibration.pdf")
   
-  acc.plt.perc <- accuracy_plot(test.y, pred.prob)
-  saveplot(acc.plt.perc, "percentage_accuracy.pdf")
-  
-  prec.plt.perc <- precision_plot(test.y, pred.prob)
-  saveplot(prec.plt.perc, "percentage_precision.pdf")
-  
-  sen.plt.perc <- recall_plot(test.y, pred.prob)
-  saveplot(sen.plt.perc, "percentage_sensitivity.pdf")
-  
-  #prop.plt.perc <- propensity_plot(test.y, pred.prob)
-  #saveplot(prop.plt.perc, "percentage_propensity.pdf")
   notat.plt <- notation_key_plot()
   
-  roc.plt <- roc_plot(test.y, pred.prob)
-  saveplot(roc.plt, "ROC.pdf")
+  dens.plt <- density_plot(test.y, pred.prob)
+  saveplot(dens.plt, "density.pdf")
   
-  lift.plt <- positives_plot(test.y, pred.prob)
+  acc.plt.perc <- accuracy_plot(test.y, pred.prob)
+  saveplot(acc.plt.perc, "accuracy.pdf")
+  
+  prec.plt.perc <- precision_plot(test.y, pred.prob)
+  saveplot(prec.plt.perc, "precision.pdf")
+  
+  lift.plt <- lift_plot(test.y, pred.prob)
   saveplot(lift.plt, "lift.pdf")
+  
+  recall.plt <- recall_plot(test.y, pred.prob)
+  saveplot(recall.plt, "recall.pdf")
   
   if(!is.null(folder)) {
     print("Saving all plots in one file ...")
     all.plt.full.name <- paste0(folder, "/ALL.pdf")
     pdf(file=all.plt.full.name, width=25, height=13)
-    gridExtra::grid.arrange(roc.plt, lift.plt, cal.plt, notat.plt,
-                 dens.plt, acc.plt.perc, prec.plt.perc, sen.plt.perc, ncol=4)
+    gridExtra::grid.arrange(roc.plt, positives.plt, cal.plt, notat.plt,
+                 dens.plt, acc.plt.perc, prec.plt.perc, recall.plt, ncol=4)
     dev.off()
     print(paste("Saved plot:", all.plt.full.name))
   }
   
   if(show) {
    dev.new(width=25, height=13, dpi=55)
-   return(gridExtra::grid.arrange(roc.plt, lift.plt, cal.plt, notat.plt,
-          dens.plt, acc.plt.perc, prec.plt.perc, sen.plt.perc, ncol=4)) 
+   return(gridExtra::grid.arrange(roc.plt, positives.plt, cal.plt, notat.plt,
+          dens.plt, acc.plt.perc, prec.plt.perc, recall.plt, ncol=4)) 
   }
 }

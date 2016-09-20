@@ -14,7 +14,7 @@ calibration_plot <- function(test.y, pred.prob) {
   }
   tbl <- data.table(bucket = 1:nbuckets, percentage = 5+bucket_array[1:nbuckets]*100, 
   blb=bucket_array[1:nbuckets], bub=bucket_array[(1:nbuckets) + 1])
-  tbl <- cbind(tbl, 100*t(sapply(lift_tbl$bucket, positive_in_band)))
+  tbl <- cbind(tbl, 100*t(sapply(tbl$bucket, positive_in_band)))
 
   ggplot(tbl, aes(x=percentage, y=y)) + 
     geom_ribbon(aes(ymin=llb, ymax=uub), fill=green_str, alpha="0.2") + 
