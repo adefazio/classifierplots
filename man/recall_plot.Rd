@@ -4,7 +4,7 @@
 \alias{recall_plot}
 \title{recall_plot}
 \usage{
-recall_plot(test.y, pred.prob, granularity = 0.02)
+recall_plot(test.y, pred.prob, granularity = 0.02, show_numbers = T)
 }
 \arguments{
 \item{test.y}{List of know labels on the test set}
@@ -12,6 +12,8 @@ recall_plot(test.y, pred.prob, granularity = 0.02)
 \item{pred.prob}{List of probability predictions on the test set}
 
 \item{granularity}{Default 0.02, probability step between points in plot.}
+
+\item{show_numbers}{Show numbers at deciles T/F default T.}
 }
 \description{
 Returns a ggplot2 plot object containing an sensitivity @ percentile plot
