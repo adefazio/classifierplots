@@ -1,6 +1,7 @@
 # Classifierplots
 
-Generates a visualization of binary classifier performance as a grid of diagonstic plots with just one function call. Includes ROC curves, prediction density, precision-recall and calibration plots, all using  ggplot2 for easy modification. Debug your binary classifiers faster and easier!
+Generates a visualization of binary classifier performance as a grid of diagonstic plots with just one function call. Includes ROC curves, prediction density, accuracy, precision, recall and calibration plots, all using ggplot2 for easy modification.
+Debug your binary classifiers faster and easier!
 
 ### Usage
 

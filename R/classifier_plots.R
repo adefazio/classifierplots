@@ -93,7 +93,7 @@ produce_classifier_plots <- function(
   prec.plt.perc <- precision_plot(test.y, pred.prob)
   saveplot(prec.plt.perc, "percentage_precision.pdf")
   
-  sen.plt.perc <- sensitivity_plot(test.y, pred.prob)
+  sen.plt.perc <- recall_plot(test.y, pred.prob)
   saveplot(sen.plt.perc, "percentage_sensitivity.pdf")
   
   #prop.plt.perc <- propensity_plot(test.y, pred.prob)
@@ -103,7 +103,7 @@ produce_classifier_plots <- function(
   roc.plt <- roc_plot(test.y, pred.prob)
   saveplot(roc.plt, "ROC.pdf")
   
-  lift.plt <- lift_plot(test.y, pred.prob)
+  lift.plt <- positives_plot(test.y, pred.prob)
   saveplot(lift.plt, "lift.pdf")
   
   if(!is.null(folder)) {

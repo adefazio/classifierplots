@@ -4,7 +4,7 @@ Version: 1.3.1
 Authors@R: person("Aaron", "Defazio", email = "aaron.defazio@ambiata.com", role = c("aut", "cre"))
 Description: Generates a visualization of binary classifier performance as a grid of
     diagonstic plots with just one function call. Includes ROC curves, 
-	prediction density, precision-recall and calibration plots, all using 
+	prediction density, accuracy, precision, recall and calibration plots, all using 
 	ggplot2 for easy modification.
 	Debug your binary classifiers faster and easier!
 Depends:
