@@ -4,18 +4,6 @@
 
 export R_LIBS_USER=/var/lib/jenkins/lib/R/library
 
-hipchat_notify () {
-  artefact=$1
-  version=$2
-  /usr/bin/curl -s https://api.hipchat.com/v1/rooms/message \
-      -d "auth_token=198d91d51d081e6b580aef9b54b5b0" \
-      -d "message_format=text" \
-      -d "message=Published artefact [$artefact:$version]" \
-      -d "from=template.R" \
-      -d "color=green" \
-      -d "room_id=builds" > /dev/null || true
-}
-
 ROOT=$(readlink "$0" || printf "$0" | xargs dirname | xargs dirname)
 ROOT=$(cd "$ROOT" > /dev/null 2>&1 && pwd)
 
@@ -32,7 +20,6 @@ tar -cvf $artefact classifierplots
 R CMD check --no-manual $artefact
 
 aws s3 cp $artefact s3://ambiata-dist/classifierplots/$version/classifierplots-$version.tgz
-hipchat_notify classifierplots $version
 
 rm -rf $work_dir
 rm -rf classifierplots.Rcheck/
