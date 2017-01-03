@@ -16,7 +16,7 @@ NULL
 #' @export
 #' @examples
 #' \dontrun{
-#'  classifierplots(example_predictions$test.y, example_predictions$pred.prob) 
+#'  classifierplots(example_predictions$test.y, example_predictions$pred.prob)
 #' }
 classifierplots <- function(test.y, pred.prob) {
   produce_classifier_plots(test.y, pred.prob, show=T)
@@ -42,12 +42,12 @@ classifierplots_folder <- function(test.y, pred.prob, folder, height=5, width=5)
 #' @importFrom grDevices x11
 #' @importFrom utils sessionInfo
 produce_classifier_plots <- function(
-  test.y, pred.prob, 
+  test.y, pred.prob,
   folder=NULL,
   height=5, width=5, show=F) {
-  check_classifier_input_and_init(test.y, pred.prob)                      
+  check_classifier_input_and_init(test.y, pred.prob)
   n <- length(test.y)
-  
+
   if(!is.null(folder)) {
     dir.create(folder, showWarnings = F)
   }
@@ -59,12 +59,12 @@ produce_classifier_plots <- function(
     test.y <- test.y[sel.ind]
     pred.prob <- pred.prob[sel.ind]
   }
-  
+
   if(!is.null(folder)) {
     auc <- calculate_auc(test.y, pred.prob)
     write(auc, file=paste0(folder, "/auc.txt"))
   }
-  
+
   saveplot <- function(plt, plt.name, width=7, height=7) {
     if(!is.null(folder)) {
       full.plt.name <- paste0(folder, "/", plt.name)
@@ -73,46 +73,48 @@ produce_classifier_plots <- function(
     }
     invisible()
   }
-  
+
   roc.plt <- roc_plot(test.y, pred.prob)
   saveplot(roc.plt, "ROC.pdf")
-  
+
   positives.plt <- positives_plot(test.y, pred.prob)
   saveplot(positives.plt, "positives.pdf")
 
   cal.plt <- calibration_plot(test.y, pred.prob)
   saveplot(cal.plt, "calibration.pdf")
-  
+
   notat.plt <- notation_key_plot()
-  
+
   dens.plt <- density_plot(test.y, pred.prob)
   saveplot(dens.plt, "density.pdf")
-  
+
   acc.plt.perc <- accuracy_plot(test.y, pred.prob)
   saveplot(acc.plt.perc, "accuracy.pdf")
-  
+
   prec.plt.perc <- precision_plot(test.y, pred.prob)
   saveplot(prec.plt.perc, "precision.pdf")
-  
+
   lift.plt <- lift_plot(test.y, pred.prob)
   saveplot(lift.plt, "lift.pdf")
-  
+
   recall.plt <- recall_plot(test.y, pred.prob)
   saveplot(recall.plt, "recall.pdf")
-  
+
   if(!is.null(folder)) {
     print("Saving all plots in one file ...")
     all.plt.full.name <- paste0(folder, "/ALL.pdf")
-    pdf(file=all.plt.full.name, width=25, height=13)
-    gridExtra::grid.arrange(roc.plt, positives.plt, cal.plt, notat.plt,
-                 dens.plt, acc.plt.perc, prec.plt.perc, recall.plt, ncol=4)
-    dev.off()
+    g <- gridExtra::arrangeGrob(roc.plt, positives.plt, cal.plt, notat.plt,
+                     dens.plt, acc.plt.perc, prec.plt.perc, recall.plt, ncol=4)
+    class(g) <- c("gTree", "grob", "gDesc") # workaround for ggplot2 bug
+    ggsave(file=all.plt.full.name, g, width=25, height=13)
     print(paste("Saved plot:", all.plt.full.name))
   }
-  
+
   if(show) {
    dev.new(width=25, height=13, dpi=55)
    return(gridExtra::grid.arrange(roc.plt, positives.plt, cal.plt, notat.plt,
-          dens.plt, acc.plt.perc, prec.plt.perc, recall.plt, ncol=4)) 
+          dens.plt, acc.plt.perc, prec.plt.perc, recall.plt, ncol=4))
+  } else {
+    invisible()
   }
 }
