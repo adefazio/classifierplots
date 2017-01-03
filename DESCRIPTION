@@ -15,7 +15,7 @@ Imports:
   grid,
   ROCR,
 	caret,
-  gridExtra,
+  gridExtra (>= 2.2),
 	stats,
 	utils,
 	png,
