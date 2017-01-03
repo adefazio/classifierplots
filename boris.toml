@@ -1,0 +1,9 @@
+[boris]
+  version = 1
+
+[build.dist]
+
+[build.branches]
+
+[build.all-rebased]
+  command = [["rebased"]]
