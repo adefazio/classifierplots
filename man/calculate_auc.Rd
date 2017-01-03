@@ -6,4 +6,15 @@
 \usage{
 calculate_auc(test.y, pred.prob)
 }
+\arguments{
+\item{test.y}{List of know labels on the test set}
+
+\item{pred.prob}{List of probability predictions on the test set}
+}
+\value{
+auc
+}
+\description{
+Compute auc from predictions and truth
+}
 

@@ -8,6 +8,6 @@
 notation_key_plot <- function() {
   img <- png::readPNG(system.file("img", "notation.png", package="classifierplots"))
   g <- grid::rasterGrob(img, interpolate=TRUE)
-  
+
   return(g)
 }

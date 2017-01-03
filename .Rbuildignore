@@ -1,11 +1,16 @@
 ^README\.md$
 ^R/example_gen\.R$
 ^.*\.Rproj$
-^\.Rproj\.user$ 
+^\.Rproj\.user$
 ^cran-comments\.md$ #
-^NEWS\.md$  
+^NEWS\.md$
 ^bin$
 ^classifierplots.*.tar.gz$
 ^example.png$
 ^example_output$
 ^classifierplots\.Rcheck$
+^.*\.toml$
+^LOCALNOTES\.md$
+^img$
+^example2$
+^exampledata\.psv$
