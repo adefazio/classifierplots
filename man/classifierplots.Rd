@@ -23,7 +23,7 @@ Produce a suit of classifier diagnostic plots
 }
 \examples{
 \dontrun{
- classifierplots(example_predictions$test.y, example_predictions$pred.prob) 
+ classifierplots(example_predictions$test.y, example_predictions$pred.prob)
 }
 }
 

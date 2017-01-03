@@ -34,7 +34,8 @@ classifierplots_folder <- function(test.y, pred.prob, folder, height=5, width=5)
   produce_classifier_plots(test.y, pred.prob, folder=folder, height=height, width=width, show=F)
 }
 
-#' @importFrom gridExtra grid.arrange
+#' @importFrom grid grid.draw
+#' @importFrom gridExtra arrangeGrob
 #' @importFrom grDevices dev.new
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices pdf
@@ -100,20 +101,29 @@ produce_classifier_plots <- function(
   recall.plt <- recall_plot(test.y, pred.prob)
   saveplot(recall.plt, "recall.pdf")
 
+
   if(!is.null(folder)) {
     print("Saving all plots in one file ...")
     all.plt.full.name <- paste0(folder, "/ALL.pdf")
     g <- gridExtra::arrangeGrob(roc.plt, positives.plt, cal.plt, notat.plt,
                      dens.plt, acc.plt.perc, prec.plt.perc, recall.plt, ncol=4)
-    class(g) <- c("gTree", "grob", "gDesc") # workaround for ggplot2 bug
-    ggsave(file=all.plt.full.name, g, width=25, height=13)
+    tryCatch(
+      ggsave(file=all.plt.full.name, g, width=25, height=13),
+      error=function(e) {
+          class(g) <- c("gTree", "grob", "gDesc") # workaround for gridExtra versioning issue
+          ggsave(file=all.plt.full.name, g, width=25, height=13)
+      })
     print(paste("Saved plot:", all.plt.full.name))
   }
 
   if(show) {
    dev.new(width=25, height=13, dpi=55)
-   return(gridExtra::grid.arrange(roc.plt, positives.plt, cal.plt, notat.plt,
-          dens.plt, acc.plt.perc, prec.plt.perc, recall.plt, ncol=4))
+   #return(gridExtra::grid.arrange(roc.plt, positives.plt, cal.plt, notat.plt,
+   #        dens.plt, acc.plt.perc, prec.plt.perc, recall.plt, ncol=4))
+    g <- gridExtra::arrangeGrob(roc.plt, positives.plt, cal.plt, notat.plt,
+                    dens.plt, acc.plt.perc, prec.plt.perc, recall.plt, ncol=4)
+    grid::grid.draw(g)
+    return(g)
   } else {
     invisible()
   }
