@@ -108,7 +108,7 @@ produce_classifier_plots <- function(
     g <- gridExtra::arrangeGrob(roc.plt, positives.plt, cal.plt, notat.plt,
                      dens.plt, acc.plt.perc, prec.plt.perc, recall.plt, ncol=4)
 
-    ggsave(file=all.plt.full.name, g, width=25, height=13)
+    ggsave(filename=all.plt.full.name, g, width=25, height=13)
     print(paste("Saved plot:", all.plt.full.name))
   }
 

@@ -21,7 +21,7 @@ Imports:
 	png,
 Suggests:
     testthat,
-License: MIT + file LICENSE
+License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 5.0.1
