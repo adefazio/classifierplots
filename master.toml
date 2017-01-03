@@ -1,0 +1,12 @@
+[master]
+  runner = "s3://ambiata-dispensary-v2/dist/master/master-r/linux/x86_64/20161201235845-c915cd4/master-r-20161201235845-c915cd4"
+  sha = "618f8c45244110e96260278381f5d27f30e999a9"
+  version = 1
+
+[build.dist]
+  PUBLISH = "true"
+  PUBLISH_S3 = "$AMBIATA_ARTEFACTS_MASTER"
+
+[build.branches]
+  PUBLISH = "true"
+  PUBLISH_S3 = "$AMBIATA_ARTEFACTS_BRANCHES"
