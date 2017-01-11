@@ -42,7 +42,7 @@ calculate_auc <- function(test.y, pred.prob) {
 #' @export
 #' @importFrom caret createResample
 roc_plot <- function(test.y, pred.prob, resamps=2000, force_bootstrap=NULL) {
-  check_classifier_input_and_init(test.y, pred.prob)
+  #check_classifier_input_and_init(test.y, pred.prob)
 
   n <- length(test.y)
 	test.y.bin <- test.y == 1
@@ -66,11 +66,12 @@ roc_plot <- function(test.y, pred.prob, resamps=2000, force_bootstrap=NULL) {
     bootstrap <- n <= big_data_cutoff
   }
 
+  # Negated to get the correct sort order later
+  pos_pred_probs <- -pred.prob[test.y.bin]
+  neg_pred_probs <- -pred.prob[!test.y.bin]
+
   if(bootstrap) {
     print("Bootstrapping ROC curves")
-  	# Negate to get the correct sort order later
-  	pos_pred_probs <- -pred.prob[test.y.bin]
-  	neg_pred_probs <- -pred.prob[!test.y.bin]
 
   	pos_pred_boots <- pos_pred_probs[c(caret::createResample(pos_pred_probs, times=resamps, list=F))]
   	neg_pred_boots <- neg_pred_probs[c(caret::createResample(neg_pred_probs, times=resamps, list=F))]
@@ -108,6 +109,21 @@ roc_plot <- function(test.y, pred.prob, resamps=2000, force_bootstrap=NULL) {
     if(format(auc_bounds[1], digits=digits_use) == format(auc_bounds[3], digits=digits_use)) {
      digits_use <- 5
     }
+  } else {
+    roc_tbl <- data.table(
+      preds=c(pos_pred_probs, neg_pred_probs),
+      y=c(rep(T, length(pos_pred_probs)),  rep(F, length(neg_pred_probs))))
+    setkey(roc_tbl, "preds")
+
+    roc_tbl[, tp := cumsum(y)]
+    roc_tbl[, fp := cumsum(!y)]
+    roc_tbl[, fpr_step := ((fp %% negative_steps) == 0)]
+
+    substeps_tbl <- roc_tbl[fpr_step == T, ]
+    # there can be multiple rows with the same fpr, so we pick the last.
+    subind <- substeps_tbl[, .I[.N], by = c("fp")]
+    roc_tbl_sub_stats <- substeps_tbl[subind$V1]
+    roc_tbl_sub_stats[, `50%` := tp]
   }
 
   print("Producing ROC plot")
