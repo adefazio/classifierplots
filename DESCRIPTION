@@ -9,9 +9,10 @@ Description: Generates a visualization of binary classifier performance as a gri
 	Debug your binary classifiers faster and easier!
 Depends:
 	R (>= 3.1),
-    ggplot2,
-    data.table
+  ggplot2 (>= 2.2),
+  data.table (>= 1.10),
 Imports:
+  Rcpp (>= 0.12),
   grid,
   ROCR,
 	caret,
@@ -23,5 +24,7 @@ Suggests:
     testthat,
 License: BSD 3-clause License + file LICENSE
 Encoding: UTF-8
+BugReports: https://github.com/ambiata/classifierplots/issues
+URL: https://github.com/ambiata/classifierplots
 LazyData: true
 RoxygenNote: 5.0.1

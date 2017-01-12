@@ -41,6 +41,7 @@ geom_ambiboxplot <- function(mapping = NULL, data = NULL,
   )
 }
 
+#' @importFrom ggplot2 ggproto
 #' @importFrom grid grobTree
 GeomAmbiBoxplot <- ggproto("GeomAmbiBoxplot", Geom,
     setup_data = function(data, params) {
@@ -99,7 +100,7 @@ GeomAmbiBoxplot <- ggproto("GeomAmbiBoxplot", Geom,
       alpha = data$alpha,
       common
     )
-    
+
     crossbar <- data.frame(
       x = data$barmin,
       xend = data$barmax,
