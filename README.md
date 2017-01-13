@@ -27,18 +27,26 @@ Run from bash in the project directory:
 
     R CMD build .
 
-This produces a tarball: classifierplots_1.3.1.tar.gz. Checks:
+This produces a tarball: classifierplots_1.3.2.tar.gz. Checks:
 
-	R CMD check --as-cran classifierplots_1.3.1.tar.gz
+	R CMD check --as-cran classifierplots_1.3.2.tar.gz
 
 ### Installing locally
 
 Run:
 
-    R CMD INSTALL classifierplots_1.3.1.tar.gz
+    R CMD INSTALL classifierplots_1.3.2.tar.gz
+
+If you need to install the dependencies as well (you probably do), then run inside R:
+
+	install.packages("devtools")
+	library(devtools)
+	install("classifierplots_1.3.2.tar.gz", dependencies=T)
 
 ### Development
 
-In R, just open an R session with the project's directory. All the functions for the package will be imported automatically. To refresh their definitions without restarting R, just run:
+In R, just open an R session within the project's directory, then run:
 
-	load_all()
+	devtools::load_all()
+
+To refresh their definitions without restarting R, just run it again.

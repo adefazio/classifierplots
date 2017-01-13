@@ -1,6 +1,6 @@
 Package: classifierplots
 Title: Generates a Visualization of Classifier Performance as a Grid of Diagnostic Plots
-Version: 1.3.1
+Version: 1.3.2
 Authors@R: person("Aaron", "Defazio", email = "aaron.defazio@ambiata.com", role = c("aut", "cre"))
 Description: Generates a visualization of binary classifier performance as a grid of
     diagnostic plots with just one function call. Includes ROC curves,
