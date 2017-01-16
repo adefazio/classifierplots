@@ -17,7 +17,10 @@ If you want to save the results to disk as folder of seperate plots as well as a
 
 ##### Runnable example
 
+	# Plot to window
 	classifierplots(example_predictions$test.y, example_predictions$pred.prob)
+	# Save output directly to disk
+	classifierplots_folder(example_predictions$test.y, example_predictions$pred.prob, "outfolder")
 
 ![Example](/man/figures/example.png?raw=true "Example")
 
@@ -37,11 +40,9 @@ Run:
 
     R CMD INSTALL classifierplots_1.3.2.tar.gz
 
-If you need to install the dependencies as well (you probably do), then run inside R:
+If you need to install the dependencies as well (you probably do), then run first:
 
-	install.packages("devtools")
-	library(devtools)
-	install("classifierplots_1.3.2.tar.gz", dependencies=T)
+	install.packages(c('Rcpp', 'tibble', 'caret', 'gridExtra', 'ggplot2', 'ROCR', 'data.table'), dependencies=T, type='source')
 
 ### Development
 

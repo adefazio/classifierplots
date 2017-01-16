@@ -39,7 +39,6 @@ classifierplots_folder <- function(test.y, pred.prob, folder, height=5, width=5)
 #' @importFrom grDevices dev.new
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices pdf
-#' @importFrom grDevices quartz
 #' @importFrom grDevices x11
 #' @importFrom utils sessionInfo
 produce_classifier_plots <- function(
@@ -59,6 +58,8 @@ produce_classifier_plots <- function(
 
     test.y <- test.y[sel.ind]
     pred.prob <- pred.prob[sel.ind]
+
+    print("Data was subsampled to 500k points for the purpose of plotting")
   }
 
   if(!is.null(folder)) {
