@@ -42,7 +42,7 @@ Run:
 
 If you need to install the dependencies as well (you probably do), then run first:
 
-	install.packages(c('Rcpp', 'tibble', 'caret', 'gridExtra', 'ggplot2', 'ROCR', 'data.table'), dependencies=T, type='source')
+	install.packages(c('Rcpp', 'tibble', 'caret', 'gridExtra', 'ggplot2', 'ROCR', 'png', 'data.table'), dependencies=T, type='source')
 
 ### Development
 
