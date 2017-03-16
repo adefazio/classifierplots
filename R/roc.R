@@ -18,8 +18,8 @@ calculate_auc <- function(test.y, pred.prob) {
 	roc_tbl <- data.table(y=test.y.bin, preds=pred.prob)
   roc_tbl <- roc_tbl[order(preds)]
 
-	npositives <- sum(test.y.bin)
-	nnegatives <- n - npositives
+	npositives <- as.double(sum(test.y.bin))
+	nnegatives <- as.double(n - npositives)
 
   print("(AUC) Calculating ranks ...")
   # Main AUC calcuation. We use the MW-U stat equivalence,
