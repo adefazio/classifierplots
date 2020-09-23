@@ -29,7 +29,7 @@ density_plot <- function(test.y, pred.prob) {
     "%\nPositive cases:   ", format(100*sum(test.y == 1)/length(test.y), digits=3), "%")
   
   plt <- ggplot(density_tbl) + 
-    geom_density(aes(x=Prediction, fill=`Ground Truth`), alpha=0.4, color=alpha('white', 0.0), size=1.5) + 
+    geom_density(aes(x=Prediction, fill=`Ground Truth`), alpha=0.4, , size=1.5) + 
     scale_x_reverse(name="Probability threshold", limits=limits) + 
     scale_y_continuous(name="Density", expand=c(0,0)) + 
     ggtitle("Prediction density") + 
