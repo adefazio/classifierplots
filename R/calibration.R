@@ -17,8 +17,8 @@ calibration_plot <- function(test.y, pred.prob) {
   tbl <- cbind(tbl, 100*t(sapply(tbl$bucket, positive_in_band)))
 
   ggplot(tbl, aes(x=percentage, y=y)) +
-    geom_ribbon(aes(ymin=llb, ymax=uub), fill=green_str, alpha="0.2") +
-  geom_ribbon(aes(ymin=lb, ymax=ub), fill=green_str, alpha="0.4") +
+    geom_ribbon(aes(ymin=llb, ymax=uub), fill=green_str, alpha=0.2) +
+  geom_ribbon(aes(ymin=lb, ymax=ub), fill=green_str, alpha=0.4) +
   	geom_abline(slope=1.0, intercept=0, linetype="dotted") +
   	scale_x_continuous(name="Predicted probability (%)", limits=c(0,100.0), breaks=seq(5, 95.0, 10.0)) +
   	scale_y_continuous(name="Smoothed true probability (%)", limits=c(0,100.0)) +

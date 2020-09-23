@@ -85,7 +85,7 @@ accuracy_plot <- function(test.y, pred.prob, granularity=0.02, show_numbers=T) {
   }
 
   return(ggplot(accuracy_tbl_perc, aes(x=percentage, y=100.0*accuracy)) + 
-    geom_ribbon(aes(ymin=100.0*accuracy_lb, ymax=100.0*accuracy_ub), fill=green_str, alpha="0.2") + 
+    geom_ribbon(aes(ymin=100.0*accuracy_lb, ymax=100.0*accuracy_ub), fill=green_str, alpha=0.2) + 
     geom_line(color=green_str, size=1.5) + classifier_theme + classifier_colours + 
     scale_x_continuous(name="k% (thresholded to positive class)", breaks=seq(0.0, 100.0, 10.0)) + 
     scale_y_continuous(name="Accuracy (%)", limits=c(0,100), breaks=seq(0.0, 100.0, 10.0)) + 
@@ -119,7 +119,7 @@ recall_plot <- function(test.y, pred.prob, granularity=0.02, show_numbers=T) {
   }
   
   return(ggplot(tbl, aes(x=percentage, y=100.0*sensitivity)) + 
-    geom_ribbon(aes(ymin=100.0*sensitivity_lb, ymax=100.0*sensitivity_ub), fill=green_str, alpha="0.2") + 
+    geom_ribbon(aes(ymin=100.0*sensitivity_lb, ymax=100.0*sensitivity_ub), fill=green_str, alpha=0.2) + 
     geom_line(color=green_str, size=1.5) + classifier_theme + classifier_colours +
     scale_x_continuous(name="k% (thresholded to positive class)", breaks=seq(0.0, 100.0, 10.0), limits=c(0,100), expand=c(0, 0.3)) + 
     scale_y_continuous(name="Recall (%)", breaks=seq(0.0, 100.0, 10.0), limits=c(0,100), expand=c(0, 0.3)) + 
