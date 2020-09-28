@@ -49,7 +49,7 @@ precision_plot <- function(test.y, pred.prob, granularity=0.02, show_numbers=T) 
   }
   
   return(ggplot(precision_tbl_perc, aes(x=percentage, y=precision)) + 
-    geom_ribbon(aes(ymin=100.0*precision_lb, ymax=100.0*precision_ub), fill=green_str, alpha="0.2") + 
+    geom_ribbon(aes(ymin=100.0*precision_lb, ymax=100.0*precision_ub), fill=green_str, alpha=0.2) + 
     geom_abline(slope=0.0, intercept=minp, linetype="dotted") + 
     geom_line(color=green_str, size=1.5) +  classifier_theme + classifier_colours +
     scale_x_continuous(name="k% (thresholded to positive class)", breaks=seq(0.0, 100.0, 10.0)) + 

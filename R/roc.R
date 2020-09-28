@@ -147,7 +147,7 @@ roc_plot <- function(test.y, pred.prob, resamps=2000, force_bootstrap=NULL) {
         geom_ribbon(aes(
             ymin=100.0*`2.5%`/npositives,
             ymax=100.0*`97.5%`/npositives),
-            fill=green_str, alpha="0.2") +
+            fill=green_str, alpha=0.2) +
         annotate("text", x=62.5, y=30,
           label=paste0("95% CI: ", format(auc_bounds[1], digits=digits_use), "% - ", format(auc_bounds[3], digits=digits_use), "%"),
           parse=F, size=4.5, colour=fontgrey_str)
