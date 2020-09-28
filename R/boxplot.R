@@ -87,7 +87,7 @@ GeomAmbiBoxplot <- ggproto("GeomAmbiBoxplot", Geom,
       xend = data$x,
       y = c(data$upper, data$lower),
       yend = c(data$ymax, data$ymin),
-      alpha = common$fill,
+      alpha = common$alpha,
       colour = common$fill,
       common
     )

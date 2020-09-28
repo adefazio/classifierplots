@@ -1,6 +1,6 @@
 Package: classifierplots
 Title: Generates a Visualization of Classifier Performance as a Grid of Diagnostic Plots
-Version: 1.3.3
+Version: 1.4
 Authors@R: c(
   person("Aaron", "Defazio", email = "aaron.defazio@gmail.com", role = c("aut")),
   person("Huw", "Campbell", email = "huw.campbell@ambiata.com", role = c("cre")))
