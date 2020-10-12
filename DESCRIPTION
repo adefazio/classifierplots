@@ -27,7 +27,7 @@ Suggests:
   testthat,
 License: BSD 3-clause License + file LICENSE
 Encoding: UTF-8
-BugReports: https://github.com/ambiata/classifierplots/issues
-URL: https://github.com/ambiata/classifierplots
+BugReports: https://github.com/adefazio/classifierplots/issues
+URL: https://github.com/adefazio/classifierplots
 LazyData: true
 RoxygenNote: 5.0.1
